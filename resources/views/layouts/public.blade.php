@@ -7,6 +7,12 @@
   <title>@yield('title', 'PT Coretech Rekayasa Digital — Enterprise IT Solution & Software House')</title>
   <meta name="description" content="@yield('meta_description', 'Penyedia Enterprise IT Solution, Custom Software Architecture, dan Digital Transformation terkemuka di Indonesia.')">
 
+  <link rel="icon" type="image/svg+xml" href="{{ asset('favicon.svg') }}">
+  <link rel="icon" type="image/png" sizes="32x32" href="{{ asset('favicon-32x32.png') }}">
+  <link rel="icon" type="image/png" sizes="16x16" href="{{ asset('favicon-16x16.png') }}">
+  <link rel="apple-touch-icon" sizes="180x180" href="{{ asset('apple-touch-icon.png') }}">
+  <link rel="shortcut icon" href="{{ asset('favicon.ico') }}">
+
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
@@ -603,11 +609,7 @@
     <div class="nav-container">
       <a href="{{ route('home') }}" class="logo">
         <div class="logo-icon">
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
-            <polygon points="12 2 2 7 12 12 22 7 12 2"/>
-            <polyline points="2 17 12 22 22 17"/>
-            <polyline points="2 12 12 17 22 12"/>
-          </svg>
+          <img src="{{ asset('favicon.svg') }}" width="24" height="24" alt="Coretech Logo" style="display:block;">
         </div>
         <span>{{ $profil->namaPerusahaan ?? 'Coretech' }}</span>
       </a>
@@ -696,11 +698,7 @@
       <div class="footer-grid">
         <div class="footer-brand">
           <a href="{{ route('home') }}" class="f-logo">
-            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" style="color:#a78bfa">
-              <polygon points="12 2 2 7 12 12 22 7 12 2"/>
-              <polyline points="2 17 12 22 22 17"/>
-              <polyline points="2 12 12 17 22 12"/>
-            </svg>
+            <img src="{{ asset('favicon.svg') }}" width="28" height="28" alt="Coretech Logo" style="display:inline-block; vertical-align:middle; margin-right:8px;">
             <span>{{ $profil->namaPerusahaan ?? 'Coretech' }}</span>
           </a>
           <p>

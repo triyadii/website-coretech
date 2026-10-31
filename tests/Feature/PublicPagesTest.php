@@ -42,6 +42,8 @@ class PublicPagesTest extends TestCase
         $response->assertSee(route('portofolio.public'));
         $response->assertSee(route('berita.public'));
         $response->assertSee('nav-container');
+        $response->assertSee('favicon.svg');
+        $response->assertSee('favicon.ico');
         $response->assertDontSee('Login Admin');
         $response->assertDontSee('Login Administrator');
     }

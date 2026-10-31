@@ -4,6 +4,11 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <title>{{ $profil->namaPerusahaan ?? 'Coretech Studio' }} — Enterprise IT Solution & Software House</title>
+  <link rel="icon" type="image/svg+xml" href="{{ asset('favicon.svg') }}">
+  <link rel="icon" type="image/png" sizes="32x32" href="{{ asset('favicon-32x32.png') }}">
+  <link rel="icon" type="image/png" sizes="16x16" href="{{ asset('favicon-16x16.png') }}">
+  <link rel="apple-touch-icon" sizes="180x180" href="{{ asset('apple-touch-icon.png') }}">
+  <link rel="shortcut icon" href="{{ asset('favicon.ico') }}">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=block" rel="stylesheet">
@@ -1998,11 +2003,7 @@
     <div class="nav-container">
       <a href="{{ route('home') }}" class="logo">
         <div class="logo-icon">
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
-            <polygon points="12 2 2 7 12 12 22 7 12 2"/>
-            <polyline points="2 17 12 22 22 17"/>
-            <polyline points="2 12 12 17 22 12"/>
-          </svg>
+          <img src="{{ asset('favicon.svg') }}" width="24" height="24" alt="Coretech Logo" style="display:block;">
         </div>
         <span>{{ $profil->namaPerusahaan ?? 'Coretech' }}</span>
       </a>
@@ -2539,7 +2540,8 @@
     <div class="sec-container">
       <div class="footer-grid">
         <div class="footer-brand">
-          <a href="#" class="f-logo">
+          <a href="{{ route('home') }}" class="f-logo">
+            <img src="{{ asset('favicon.svg') }}" width="28" height="28" alt="Coretech Logo" style="display:inline-block; vertical-align:middle; margin-right:8px;">
             <span>{{ $profil->namaPerusahaan ?? 'Coretech' }}</span>
           </a>
           <p>

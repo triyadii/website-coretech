@@ -5,7 +5,10 @@
     <title>@yield('title', 'Admin Dashboard') — Coretech Studio</title>
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="csrf-token" content="{{ csrf_token() }}">
-    <link rel="shortcut icon" href="{{ asset('assets/media/logos/favicon.ico') }}" />
+    <link rel="icon" type="image/svg+xml" href="{{ asset('favicon.svg') }}" />
+    <link rel="icon" type="image/png" sizes="32x32" href="{{ asset('favicon-32x32.png') }}" />
+    <link rel="apple-touch-icon" sizes="180x180" href="{{ asset('apple-touch-icon.png') }}" />
+    <link rel="shortcut icon" href="{{ asset('favicon.ico') }}" />
     <!-- Fonts -->
     <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Inter:300,400,500,600,700" />
     <!-- Metronic Global Stylesheets -->
@@ -116,9 +119,9 @@
                 <div id="kt_app_sidebar" class="app-sidebar flex-column" data-kt-drawer="true" data-kt-drawer-name="app-sidebar" data-kt-drawer-activate="{default: true, lg: false}" data-kt-drawer-overlay="true" data-kt-drawer-width="240px" data-kt-drawer-direction="start" data-kt-drawer-toggle="#kt_app_sidebar_mobile_toggle">
                     <!-- Brand Logo -->
                     <div class="app-sidebar-logo" id="kt_app_sidebar_logo">
-                        <a href="{{ route('admin.dashboard') }}" class="brand-text d-flex align-items-center gap-2">
-                            <i class="ki-duotone ki-code fs-1 text-primary"><span class="path1"></span><span class="path2"></span><span class="path3"></span><span class="path4"></span></i>
-                            CORETECH
+                        <a href="{{ route('admin.dashboard') }}" class="brand-text d-flex align-items-center gap-3">
+                            <img src="{{ asset('favicon.svg') }}" alt="Coretech Logo" style="width: 28px; height: 28px;">
+                            <span>CORETECH</span>
                         </a>
                     </div>
 

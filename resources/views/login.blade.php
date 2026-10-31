@@ -5,7 +5,10 @@
 		<title>Login Administrator — Coretech Studio</title>
 		<meta charset="utf-8" />
 		<meta name="viewport" content="width=device-width, initial-scale=1" />
-		<link rel="shortcut icon" href="{{ asset('assets/media/logos/favicon.ico') }}" />
+		<link rel="icon" type="image/svg+xml" href="{{ asset('favicon.svg') }}" />
+		<link rel="icon" type="image/png" sizes="32x32" href="{{ asset('favicon-32x32.png') }}" />
+		<link rel="apple-touch-icon" sizes="180x180" href="{{ asset('apple-touch-icon.png') }}" />
+		<link rel="shortcut icon" href="{{ asset('favicon.ico') }}" />
 		<!--begin::Fonts(mandatory for all pages)-->
 		<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Inter:300,400,500,600,700" />
 		<!--end::Fonts-->
@@ -31,9 +34,14 @@
 							<form class="form w-100" method="POST" action="{{ route('login.post') }}">
 								@csrf
 								<!--begin::Heading-->
-								<div class="text-center mb-11">
+								<div class="text-center mb-8">
+									<div class="mb-4">
+										<a href="{{ route('home') }}">
+											<img src="{{ asset('favicon.svg') }}" alt="Coretech Logo" style="width: 56px; height: 56px; filter: drop-shadow(0 0 15px rgba(167, 139, 250, 0.4));">
+										</a>
+									</div>
 									<!--begin::Title-->
-									<h1 class="text-white fw-bolder mb-3 fs-2qx">Admin Portal</h1>
+									<h1 class="text-white fw-bolder mb-2 fs-2qx">Admin Portal</h1>
 									<!--end::Title-->
 									<!--begin::Subtitle-->
 									<div class="text-gray-400 fw-semibold fs-6">Coretech Management System</div>
