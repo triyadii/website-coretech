@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Admin\BeritaController;
 use App\Http\Controllers\Admin\DashboardController;
+use App\Http\Controllers\Admin\KategoriPortofolioController;
 use App\Http\Controllers\Admin\KonsultasiController;
 use App\Http\Controllers\Admin\MasterJasaController;
 use App\Http\Controllers\Admin\PortofolioController;
@@ -29,6 +30,10 @@ Route::middleware('auth')->prefix('admin')->name('admin.')->group(function () {
     Route::get('/', [DashboardController::class, 'index'])->name('dashboard');
 
     // 1. Portofolio Management
+    Route::resource('kategori-portofolio', KategoriPortofolioController::class)
+        ->parameters(['kategori-portofolio' => 'kategoriPortofolio'])
+        ->except(['create', 'edit', 'show']);
+
     Route::resource('portofolio', PortofolioController::class)
         ->parameters(['portofolio' => 'portofolio'])
         ->except(['create', 'edit', 'show']);

@@ -68,6 +68,120 @@
     z-index: 2;
   }
 
+  /* Category Filter Pills */
+  .category-filter-wrap {
+    margin-top: 2rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1rem;
+    position: relative;
+    z-index: 5;
+  }
+
+  .category-filter-bar {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 0.6rem;
+    padding: 0.45rem 0.6rem;
+    background: rgba(14, 14, 20, 0.7);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    backdrop-filter: blur(16px);
+    border-radius: 9999px;
+    max-width: 100%;
+  }
+
+  .filter-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.45rem 1.05rem;
+    border-radius: 9999px;
+    font-size: 0.84rem;
+    font-weight: 500;
+    color: #94a3b8;
+    text-decoration: none;
+    background: transparent;
+    border: 1px solid transparent;
+    transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+
+  .filter-pill:hover {
+    color: #ffffff;
+    background: rgba(255, 255, 255, 0.05);
+    border-color: rgba(255, 255, 255, 0.12);
+  }
+
+  .filter-pill.active {
+    color: #ffffff;
+    background: rgba(167, 139, 250, 0.15);
+    border-color: rgba(167, 139, 250, 0.4);
+    font-weight: 600;
+    box-shadow: 0 0 15px rgba(167, 139, 250, 0.2);
+  }
+
+  .filter-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    display: inline-block;
+  }
+
+  .filter-count {
+    font-size: 0.72rem;
+    padding: 0.1rem 0.45rem;
+    border-radius: 9999px;
+    background: rgba(255, 255, 255, 0.08);
+    color: #cbd5e1;
+  }
+
+  .filter-pill.active .filter-count {
+    background: rgba(167, 139, 250, 0.3);
+    color: #ffffff;
+  }
+
+  .active-filter-indicator {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    font-size: 0.85rem;
+    color: #94a3b8;
+    background: rgba(167, 139, 250, 0.08);
+    border: 1px solid rgba(167, 139, 250, 0.2);
+    padding: 0.4rem 1rem;
+    border-radius: 9999px;
+  }
+
+  .active-filter-indicator strong {
+    color: #a78bfa;
+  }
+
+  .filter-sep {
+    color: rgba(255, 255, 255, 0.2);
+  }
+
+  .filter-sub {
+    color: #64748b;
+    font-size: 0.8rem;
+  }
+
+  .btn-clear-filter {
+    color: #f43f5e;
+    text-decoration: none;
+    font-weight: 600;
+    font-size: 0.8rem;
+    margin-left: 0.5rem;
+    padding-left: 0.5rem;
+    border-left: 1px solid rgba(255, 255, 255, 0.15);
+  }
+
+  .btn-clear-filter:hover {
+    color: #fb7185;
+    text-decoration: underline;
+  }
+
   /* Multi-photo thumbnail bar */
   .photo-thumbs-bar {
     display: flex;
@@ -334,6 +448,42 @@
   <p class="page-subtitle">
     Jelajahi portofolio sistem perbankan skala enterprise, ERP rantai pasok cerdas, integrasi telematika, dan solusi software tangguh yang dirancang oleh Coretech.
   </p>
+
+  <!-- Category Filter Bar -->
+  <div class="category-filter-wrap">
+    <div class="category-filter-bar">
+      <a href="{{ route('portofolio.public') }}" class="filter-pill {{ empty($selectedKategori) ? 'active' : '' }}">
+        <span class="filter-dot" style="background: #a78bfa;"></span>
+        Semua Proyek
+      </a>
+      @foreach($kategoris as $kat)
+        <a href="{{ route('portofolio.public', ['kategori' => $kat->slug]) }}" 
+           class="filter-pill {{ (!empty($selectedKategori) && $selectedKategori->id === $kat->id) ? 'active' : '' }}"
+           style="{{ (!empty($selectedKategori) && $selectedKategori->id === $kat->id && $kat->warna) ? 'border-color: '.$kat->warna.'; background: rgba(167, 139, 250, 0.15);' : '' }}">
+          @if($kat->warna)
+            <span class="filter-dot" style="background: {{ $kat->warna }};"></span>
+          @endif
+          <span>{{ $kat->nama }}</span>
+          @if(isset($kat->portofolios_count))
+            <span class="filter-count">{{ $kat->portofolios_count }}</span>
+          @endif
+        </a>
+      @endforeach
+    </div>
+
+    @if(!empty($selectedKategori))
+      <div class="active-filter-indicator">
+        <span>Menampilkan kategori: <strong>{{ $selectedKategori->nama }}</strong></span>
+        @if($selectedKategori->keterangan)
+          <span class="filter-sep">•</span>
+          <span class="filter-sub">{{ $selectedKategori->keterangan }}</span>
+        @endif
+        <a href="{{ route('portofolio.public') }}" class="btn-clear-filter">
+          Reset Filter &times;
+        </a>
+      </div>
+    @endif
+  </div>
 </div>
 
 <div class="content-container">
@@ -345,7 +495,9 @@
       @endphp
       <div class="glass-card portfolio-card" id="card-{{ $port->uuid }}">
         <div class="portfolio-media">
-          <span class="portfolio-tag">Enterprise Solution</span>
+          <span class="portfolio-tag" style="{{ $port->kategori && $port->kategori->warna ? 'border-color: '.$port->kategori->warna.'55; color: '.$port->kategori->warna : '' }}">
+            {{ $port->kategori->nama ?? 'Enterprise Solution' }}
+          </span>
 
           @if(!empty($photos) && count($photos) > 1)
             <div class="portfolio-photo-count">
@@ -395,8 +547,14 @@
         </div>
       </div>
     @empty
-      <div style="grid-column: 1/-1; text-align: center; padding: 4rem 1rem; color: #94a3b8;">
-        Belum ada portofolio yang ditampilkan.
+      <div style="grid-column: 1/-1; text-align: center; padding: 4.5rem 1.5rem; color: #94a3b8; background: rgba(14, 14, 20, 0.4); border: 1px dashed rgba(255, 255, 255, 0.1); border-radius: 20px;">
+        <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" style="margin: 0 auto 1.25rem; color: #64748b; display: block;"><polygon points="12 2 2 7 12 12 22 7 12 2"/><polyline points="2 17 12 22 22 17"/><polyline points="2 12 12 17 22 12"/></svg>
+        <div style="font-size: 1.15rem; font-weight: 700; color: #f1f5f9; margin-bottom: 0.5rem;">Belum ada portofolio pada kategori ini</div>
+        <p style="font-size: 0.92rem; color: #64748b; max-width: 440px; margin: 0 auto 1.5rem; line-height: 1.6;">Proyek untuk kategori ini sedang dalam tahap perakitan dan dokumentasi arsitektur. Silakan jelajahi kategori lainnya.</p>
+        <a href="{{ route('portofolio.public') }}" class="btn-live">
+          Lihat Semua Portofolio
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
+        </a>
       </div>
     @endforelse
   </div>

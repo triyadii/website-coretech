@@ -168,6 +168,14 @@
                                     </a>
                                 </div>
 
+                                <!-- Master Kategori Portofolio -->
+                                <div class="menu-item">
+                                    <a class="menu-link {{ request()->routeIs('admin.kategori-portofolio.*') ? 'active' : '' }}" href="{{ route('admin.kategori-portofolio.index') }}">
+                                        <span class="menu-icon"><i class="ki-duotone ki-category fs-2"><span class="path1"></span><span class="path2"></span><span class="path3"></span><span class="path4"></span></i></span>
+                                        <span class="menu-title">Kategori Portofolio</span>
+                                    </a>
+                                </div>
+
                                 <!-- 2. QA -->
                                 <div class="menu-item">
                                     <a class="menu-link {{ request()->routeIs('admin.qa.*') ? 'active' : '' }}" href="{{ route('admin.qa.index') }}">

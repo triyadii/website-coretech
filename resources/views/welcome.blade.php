@@ -2249,7 +2249,9 @@
               @else
                 <div class="port-preview-bg" style="background-image: radial-gradient(circle at 70% 30%, rgba(167, 139, 250, 0.35) 0%, rgba(10, 10, 18, 0.95) 75%);"></div>
               @endif
-              <span class="port-tag">Proyek Enterprise</span>
+              <span class="port-tag" style="{{ $port->kategori && $port->kategori->warna ? 'border-color: '.$port->kategori->warna.'55; color: '.$port->kategori->warna : '' }}">
+                {{ $port->kategori->nama ?? 'Proyek Enterprise' }}
+              </span>
               @if(!empty($photos) && count($photos) > 1)
                 <div class="port-stat-pill">{{ count($photos) }} <span>Foto Dokumentasi</span></div>
               @endif

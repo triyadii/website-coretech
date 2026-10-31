@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Berita;
+use App\Models\KategoriPortofolio;
 use App\Models\Konsultasi;
 use App\Models\ManajemenMasterJasa;
 use App\Models\ManajemenProfil;
@@ -16,7 +17,7 @@ class HomeController extends Controller
 {
     public function index(): View
     {
-        $portofolios = Portofolio::latest()->take(3)->get();
+        $portofolios = Portofolio::with('kategori')->latest()->take(3)->get();
         $beritas = Berita::where('status', 'published')->latest()->take(3)->get();
         $qas = Qa::latest()->get();
         $profil = ManajemenProfil::first();
@@ -25,13 +26,25 @@ class HomeController extends Controller
         return view('welcome', compact('portofolios', 'beritas', 'qas', 'profil', 'masterJasas'));
     }
 
-    public function portofolio(): View
+    public function portofolio(Request $request): View
     {
-        $portofolios = Portofolio::latest()->paginate(9);
+        $query = Portofolio::with('kategori');
+        $selectedKategori = null;
+
+        if ($request->filled('kategori')) {
+            $slug = trim((string) $request->input('kategori'));
+            $selectedKategori = KategoriPortofolio::where('slug', $slug)->first();
+            if ($selectedKategori) {
+                $query->where('kategori_id', $selectedKategori->id);
+            }
+        }
+
+        $portofolios = $query->latest()->paginate(9)->withQueryString();
+        $kategoris = KategoriPortofolio::withCount('portofolios')->orderBy('nama')->get();
         $profil = ManajemenProfil::first();
         $masterJasas = ManajemenMasterJasa::latest()->get();
 
-        return view('portofolio.index', compact('portofolios', 'profil', 'masterJasas'));
+        return view('portofolio.index', compact('portofolios', 'kategoris', 'selectedKategori', 'profil', 'masterJasas'));
     }
 
     public function berita(Request $request): View

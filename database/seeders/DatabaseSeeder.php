@@ -3,6 +3,7 @@
 namespace Database\Seeders;
 
 use App\Models\Berita;
+use App\Models\KategoriPortofolio;
 use App\Models\Konsultasi;
 use App\Models\ManajemenMasterJasa;
 use App\Models\ManajemenProfil;
@@ -61,10 +62,59 @@ class DatabaseSeeder extends Seeder
             ]
         );
 
-        // 3. Portofolio (max 3 foto per item)
+        // 3. Master Kategori Portofolio
+        $kategoriDefs = [
+            [
+                'nama' => 'Fintech & Digital Banking',
+                'slug' => 'fintech-digital-banking',
+                'keterangan' => 'Solusi perbankan modern, payment gateway, treasury multinasional, dan kepatuhan finansial.',
+                'warna' => '#38bdf8',
+            ],
+            [
+                'nama' => 'Enterprise ERP & Supply Chain',
+                'slug' => 'enterprise-erp-supply-chain',
+                'keterangan' => 'Platform operasional terintegrasi, manajemen logistik, armada IoT, dan pergudangan otomatis.',
+                'warna' => '#818cf8',
+            ],
+            [
+                'nama' => 'Healthcare & Telehealth',
+                'slug' => 'healthcare-telehealth',
+                'keterangan' => 'Sistem rekam medis digital (EMR), telemedisin terenkripsi, dan integrasi fasilitas kesehatan.',
+                'warna' => '#34d399',
+            ],
+            [
+                'nama' => 'Smart City & GovTech',
+                'slug' => 'smart-city-govtech',
+                'keterangan' => 'Portal pelayanan publik warga, sistem satu data daerah, perizinan online, dan GIS geospasial.',
+                'warna' => '#fbbf24',
+            ],
+            [
+                'nama' => 'InsurTech & Automation',
+                'slug' => 'insurtech-automation',
+                'keterangan' => 'Otomasi underwriting polis, deteksi klaim fraud berbasis visual AI, dan portal agen cerdas.',
+                'warna' => '#f472b6',
+            ],
+            [
+                'nama' => 'AI & Machine Learning',
+                'slug' => 'ai-machine-learning',
+                'keterangan' => 'Private LLM korporasi, autonomous workflow agents, dan computer vision industri.',
+                'warna' => '#a78bfa',
+            ],
+        ];
+
+        $kategoriModels = [];
+        foreach ($kategoriDefs as $kd) {
+            $kategoriModels[$kd['slug']] = KategoriPortofolio::updateOrCreate(
+                ['slug' => $kd['slug']],
+                array_merge($kd, ['uuid' => (string) Str::uuid()])
+            );
+        }
+
+        // 4. Portofolio (max 3 foto per item)
         $portofolios = [
             [
                 'nama' => 'FinCore — Cross-Border Treasury & Payment Engine',
+                'kategori_id' => $kategoriModels['fintech-digital-banking']->id,
                 'keterangan' => 'Platform kliring dan likuiditas multi-mata uang dengan rekonsiliasi otomatis real-time, integrasi gateway perbankan internasional, dan deteksi anomali anti-fraud.',
                 'link' => 'https://fincore.example.com',
                 'foto' => [
@@ -75,6 +125,7 @@ class DatabaseSeeder extends Seeder
             ],
             [
                 'nama' => 'Omnix — AI Supply Chain & Fleet Telematics',
+                'kategori_id' => $kategoriModels['enterprise-erp-supply-chain']->id,
                 'keterangan' => 'Sistem ERP rantai pasok multinasional dengan machine learning untuk peramalan permintaan stok, optimasi rute armada real-time, dan pelacakan pergudangan IoT.',
                 'link' => 'https://omnix.example.com',
                 'foto' => [
@@ -84,6 +135,7 @@ class DatabaseSeeder extends Seeder
             ],
             [
                 'nama' => 'MediConnect — Unified Telehealth & Hospital EMR',
+                'kategori_id' => $kategoriModels['healthcare-telehealth']->id,
                 'keterangan' => 'Ekosistem rekam medis elektronik (EMR) terintegrasi untuk 40+ rumah sakit swasta, konsultasi video dokter HD terenkripsi, dan integrasi BPJS / asuransi instan.',
                 'link' => 'https://mediconnect.example.com',
                 'foto' => [
@@ -93,6 +145,7 @@ class DatabaseSeeder extends Seeder
             ],
             [
                 'nama' => 'GovSmart — Smart City Public Service Portal',
+                'kategori_id' => $kategoriModels['smart-city-govtech']->id,
                 'keterangan' => 'Portal terpadu pelayanan publik pemerintah daerah yang melayani 2.5 juta warga untuk perizinan online, monitoring bansos, dan sistem tanggap darurat bencana berbasis GIS geolokasi.',
                 'link' => 'https://govsmart.example.com',
                 'foto' => [
@@ -102,6 +155,7 @@ class DatabaseSeeder extends Seeder
             ],
             [
                 'nama' => 'InsureCore — Autonomous Claims & Policy Engine',
+                'kategori_id' => $kategoriModels['insurtech-automation']->id,
                 'keterangan' => 'Mesin pemrosesan klaim asuransi otomatis dengan Computer Vision untuk analisis kerusakan kendaraan, integrasi bengkel rekanan, dan validasi polis instan dalam 3 menit.',
                 'link' => 'https://insurecore.example.com',
                 'foto' => [

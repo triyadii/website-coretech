@@ -10,8 +10,11 @@
         <div class="card-title">
             <h3 class="fw-bold m-0 text-gray-900">Daftar Portofolio Proyek</h3>
         </div>
-        <div class="card-toolbar">
-            <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modalTambahPortofolio">
+        <div class="card-toolbar gap-2">
+            <a href="{{ route('admin.kategori-portofolio.index') }}" class="btn btn-light-primary btn-sm">
+                <i class="ki-duotone ki-category fs-3"></i> Kelola Master Kategori
+            </a>
+            <button type="button" class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#modalTambahPortofolio">
                 <i class="ki-duotone ki-plus fs-2"></i> Tambah Portofolio
             </button>
         </div>
@@ -23,9 +26,10 @@
                 <thead>
                     <tr class="text-start text-muted fw-bold fs-7 text-uppercase gs-0">
                         <th class="min-w-150px">Nama Proyek</th>
+                        <th class="min-w-140px">Kategori</th>
                         <th class="min-w-200px">Keterangan</th>
-                        <th class="min-w-120px">Link Proyek</th>
-                        <th class="min-w-140px">Foto (Maks. 3)</th>
+                        <th class="min-w-110px">Link Proyek</th>
+                        <th class="min-w-130px">Foto (Maks. 3)</th>
                         <th class="text-end min-w-100px">Aksi</th>
                     </tr>
                 </thead>
@@ -39,7 +43,16 @@
                                 </div>
                             </td>
                             <td>
-                                <p class="mb-0 text-gray-700 fs-7" style="max-width: 320px;">
+                                @if($item->kategori)
+                                    <span class="badge fw-bold fs-7" style="background-color: {{ $item->kategori->warna ? $item->kategori->warna.'22' : 'rgba(167, 139, 250, 0.15)' }}; color: {{ $item->kategori->warna ?: '#a78bfa' }}; border: 1px solid {{ $item->kategori->warna ? $item->kategori->warna.'44' : 'rgba(167, 139, 250, 0.3)' }};">
+                                        {{ $item->kategori->nama }}
+                                    </span>
+                                @else
+                                    <span class="badge badge-light-secondary fs-8">Tanpa Kategori</span>
+                                @endif
+                            </td>
+                            <td>
+                                <p class="mb-0 text-gray-700 fs-7" style="max-width: 300px;">
                                     {{ Str::limit($item->keterangan, 120) }}
                                 </p>
                             </td>
@@ -100,6 +113,18 @@
                                                 <input type="text" class="form-control form-control-solid" name="nama" value="{{ old('nama', $item->nama) }}" required />
                                             </div>
                                             <div class="mb-5">
+                                                <label class="fs-6 fw-semibold mb-2">Master Kategori Portofolio</label>
+                                                <select class="form-select form-select-solid" name="kategori_id">
+                                                    <option value="">-- Tanpa Kategori --</option>
+                                                    @foreach($kategoris as $kat)
+                                                        <option value="{{ $kat->id }}" {{ old('kategori_id', $item->kategori_id) == $kat->id ? 'selected' : '' }}>
+                                                            {{ $kat->nama }}
+                                                        </option>
+                                                    @endforeach
+                                                </select>
+                                                <div class="form-text">Pilih kategori industri proyek. Kelola kategori di menu Master Kategori.</div>
+                                            </div>
+                                            <div class="mb-5">
                                                 <label class="required fs-6 fw-semibold mb-2">Keterangan / Deskripsi</label>
                                                 <textarea class="form-control form-control-solid" rows="4" name="keterangan" required>{{ old('keterangan', $item->keterangan) }}</textarea>
                                             </div>
@@ -127,7 +152,7 @@
                         </div>
                     @empty
                         <tr>
-                            <td colspan="5" class="text-center py-8 text-muted">Belum ada portofolio yang terdaftar.</td>
+                            <td colspan="6" class="text-center py-8 text-muted">Belum ada portofolio yang terdaftar.</td>
                         </tr>
                     @endforelse
                 </tbody>
@@ -155,6 +180,18 @@
                     <div class="mb-5">
                         <label class="required fs-6 fw-semibold mb-2">Nama Proyek</label>
                         <input type="text" class="form-control form-control-solid" name="nama" placeholder="Contoh: FinTech Mobile App" required />
+                    </div>
+                    <div class="mb-5">
+                        <label class="fs-6 fw-semibold mb-2">Master Kategori Portofolio</label>
+                        <select class="form-select form-select-solid" name="kategori_id">
+                            <option value="">-- Tanpa Kategori (Opsional) --</option>
+                            @foreach($kategoris as $kat)
+                                <option value="{{ $kat->id }}" {{ old('kategori_id') == $kat->id ? 'selected' : '' }}>
+                                    {{ $kat->nama }}
+                                </option>
+                            @endforeach
+                        </select>
+                        <div class="form-text">Pilih kategori industri proyek. Kelola kategori di menu Master Kategori.</div>
                     </div>
                     <div class="mb-5">
                         <label class="required fs-6 fw-semibold mb-2">Keterangan / Deskripsi</label>

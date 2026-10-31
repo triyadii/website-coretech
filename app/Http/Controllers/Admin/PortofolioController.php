@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Models\KategoriPortofolio;
 use App\Models\Portofolio;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -12,15 +13,17 @@ class PortofolioController extends Controller
 {
     public function index(): View
     {
-        $portofolios = Portofolio::latest()->paginate(10);
+        $portofolios = Portofolio::with('kategori')->latest()->paginate(10);
+        $kategoris = KategoriPortofolio::orderBy('nama')->get();
 
-        return view('admin.portofolio.index', compact('portofolios'));
+        return view('admin.portofolio.index', compact('portofolios', 'kategoris'));
     }
 
     public function store(Request $request): RedirectResponse
     {
         $request->validate([
             'nama' => ['required', 'string', 'max:255'],
+            'kategori_id' => ['nullable', 'exists:kategori_portofolios,id'],
             'keterangan' => ['required', 'string'],
             'link' => ['nullable', 'url', 'max:255'],
             'foto_urls' => ['nullable', 'string'],
@@ -52,6 +55,7 @@ class PortofolioController extends Controller
 
         Portofolio::create([
             'nama' => $request->input('nama'),
+            'kategori_id' => $request->input('kategori_id'),
             'keterangan' => $request->input('keterangan'),
             'link' => $request->input('link'),
             'foto' => $photos,
@@ -64,6 +68,7 @@ class PortofolioController extends Controller
     {
         $request->validate([
             'nama' => ['required', 'string', 'max:255'],
+            'kategori_id' => ['nullable', 'exists:kategori_portofolios,id'],
             'keterangan' => ['required', 'string'],
             'link' => ['nullable', 'url', 'max:255'],
             'foto_urls' => ['nullable', 'string'],
@@ -94,6 +99,7 @@ class PortofolioController extends Controller
 
         $portofolio->update([
             'nama' => $request->input('nama'),
+            'kategori_id' => $request->input('kategori_id'),
             'keterangan' => $request->input('keterangan'),
             'link' => $request->input('link'),
             'foto' => $photos,

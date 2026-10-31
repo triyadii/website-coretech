@@ -3,6 +3,7 @@
 namespace Tests\Feature;
 
 use App\Models\Berita;
+use App\Models\KategoriPortofolio;
 use App\Models\ManajemenMasterJasa;
 use App\Models\ManajemenProfil;
 use App\Models\Portofolio;
@@ -50,21 +51,68 @@ class PublicPagesTest extends TestCase
 
     public function test_portofolio_public_listing_page(): void
     {
-        Portofolio::create([
+        $kategori1 = KategoriPortofolio::create([
+            'nama' => 'Fintech & Payment',
+            'slug' => 'fintech-payment',
+            'warna' => '#10b981',
+        ]);
+
+        $kategori2 = KategoriPortofolio::create([
+            'nama' => 'Healthcare & AI',
+            'slug' => 'healthcare-ai',
+            'warna' => '#06b6d4',
+        ]);
+
+        $project1 = Portofolio::create([
             'uuid' => (string) Str::uuid(),
+            'kategori_id' => $kategori1->id,
             'nama' => 'FinCore Payment Engine',
             'keterangan' => 'Modern Treasury System',
             'link' => 'https://fincore.example.com',
             'foto' => ['https://example.com/pic1.jpg'],
         ]);
 
+        $project2 = Portofolio::create([
+            'uuid' => (string) Str::uuid(),
+            'kategori_id' => $kategori2->id,
+            'nama' => 'MediCare Telehealth Core',
+            'keterangan' => 'Electronic Health Record and Diagnostics',
+            'link' => 'https://medicare.example.com',
+            'foto' => ['https://example.com/pic2.jpg'],
+        ]);
+
+        // 1. All projects listing
         $response = $this->get(route('portofolio.public'));
 
         $response->assertStatus(200);
         $response->assertSee('Portofolio');
         $response->assertSee('FinCore Payment Engine');
-        $response->assertSee('Modern Treasury System');
-        $response->assertSee('https://fincore.example.com');
+        $response->assertSee('Fintech &amp; Payment', false);
+        $response->assertSee('MediCare Telehealth Core');
+        $response->assertSee('Healthcare &amp; AI', false);
+        $response->assertSee('Semua Proyek');
+
+        // 2. Filter by fintech category
+        $filteredResponse = $this->get(route('portofolio.public', ['kategori' => 'fintech-payment']));
+        $filteredResponse->assertStatus(200);
+        $filteredResponse->assertSee('FinCore Payment Engine');
+        $filteredResponse->assertDontSee('MediCare Telehealth Core');
+        $filteredResponse->assertSee('Menampilkan kategori:');
+
+        // 3. Filter by empty category
+        $emptyCat = KategoriPortofolio::create([
+            'nama' => 'Smart City',
+            'slug' => 'smart-city',
+        ]);
+        $emptyResponse = $this->get(route('portofolio.public', ['kategori' => 'smart-city']));
+        $emptyResponse->assertStatus(200);
+        $emptyResponse->assertSee('Belum ada portofolio pada kategori ini');
+
+        // 4. Landing page should show category badge
+        $homeResponse = $this->get(route('home'));
+        $homeResponse->assertStatus(200);
+        $homeResponse->assertSee('FinCore Payment Engine');
+        $homeResponse->assertSee('Fintech &amp; Payment', false);
     }
 
     public function test_berita_public_listing_page_and_search(): void

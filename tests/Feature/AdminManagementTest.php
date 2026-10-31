@@ -3,6 +3,7 @@
 namespace Tests\Feature;
 
 use App\Models\Berita;
+use App\Models\KategoriPortofolio;
 use App\Models\Konsultasi;
 use App\Models\ManajemenMasterJasa;
 use App\Models\ManajemenProfil;
@@ -28,10 +29,56 @@ class AdminManagementTest extends TestCase
         ]);
     }
 
+    public function test_can_manage_kategori_portofolio(): void
+    {
+        // 1. Create category
+        $response = $this->actingAs($this->admin)->post(route('admin.kategori-portofolio.store'), [
+            'nama' => 'Fintech & Digital Banking',
+            'keterangan' => 'Arsitektur sistem keuangan modern dan pembayaran digital.',
+            'warna' => '#10b981',
+        ]);
+
+        $response->assertRedirect(route('admin.kategori-portofolio.index'));
+        $this->assertDatabaseHas('kategori_portofolios', [
+            'nama' => 'Fintech & Digital Banking',
+            'slug' => 'fintech-digital-banking',
+            'warna' => '#10b981',
+        ]);
+
+        $kategori = KategoriPortofolio::where('nama', 'Fintech & Digital Banking')->first();
+        $this->assertNotEmpty($kategori->uuid);
+
+        // 2. Update category
+        $updateResponse = $this->actingAs($this->admin)->put(route('admin.kategori-portofolio.update', $kategori->id), [
+            'nama' => 'Fintech & Neobanking',
+            'keterangan' => 'Updated deskripsi neobank.',
+            'warna' => '#06b6d4',
+        ]);
+
+        $updateResponse->assertRedirect(route('admin.kategori-portofolio.index'));
+        $this->assertDatabaseHas('kategori_portofolios', [
+            'id' => $kategori->id,
+            'nama' => 'Fintech & Neobanking',
+            'slug' => 'fintech-neobanking',
+            'warna' => '#06b6d4',
+        ]);
+
+        // 3. Delete category
+        $deleteResponse = $this->actingAs($this->admin)->delete(route('admin.kategori-portofolio.destroy', $kategori->id));
+        $deleteResponse->assertRedirect(route('admin.kategori-portofolio.index'));
+        $this->assertDatabaseMissing('kategori_portofolios', ['id' => $kategori->id]);
+    }
+
     public function test_can_manage_portofolio(): void
     {
-        // 1. Create
+        $kategori = KategoriPortofolio::create([
+            'nama' => 'Enterprise ERP',
+            'warna' => '#8b5cf6',
+        ]);
+
+        // 1. Create with kategori_id
         $response = $this->actingAs($this->admin)->post(route('admin.portofolio.store'), [
+            'kategori_id' => $kategori->id,
             'nama' => 'Enterprise Banking Mobile App',
             'keterangan' => 'Modern cross-platform banking system with biometric auth.',
             'link' => 'https://example.com/banking',
@@ -39,20 +86,33 @@ class AdminManagementTest extends TestCase
         ]);
 
         $response->assertRedirect(route('admin.portofolio.index'));
-        $this->assertDatabaseHas('portofolios', ['nama' => 'Enterprise Banking Mobile App']);
+        $this->assertDatabaseHas('portofolios', [
+            'nama' => 'Enterprise Banking Mobile App',
+            'kategori_id' => $kategori->id,
+        ]);
 
         $portofolio = Portofolio::where('nama', 'Enterprise Banking Mobile App')->first();
         $this->assertNotEmpty($portofolio->uuid);
         $this->assertCount(2, $portofolio->foto);
+        $this->assertEquals($kategori->id, $portofolio->kategori->id);
 
-        // 2. Update
+        // 2. Update with new kategori
+        $kategori2 = KategoriPortofolio::create([
+            'nama' => 'Fintech High-Freq',
+            'warna' => '#ec4899',
+        ]);
+
         $updateResponse = $this->actingAs($this->admin)->put(route('admin.portofolio.update', $portofolio->id), [
+            'kategori_id' => $kategori2->id,
             'nama' => 'Enterprise Banking Mobile App v2',
             'keterangan' => 'Updated keterangan description.',
             'link' => 'https://example.com/banking-v2',
         ]);
         $updateResponse->assertRedirect(route('admin.portofolio.index'));
-        $this->assertDatabaseHas('portofolios', ['nama' => 'Enterprise Banking Mobile App v2']);
+        $this->assertDatabaseHas('portofolios', [
+            'nama' => 'Enterprise Banking Mobile App v2',
+            'kategori_id' => $kategori2->id,
+        ]);
 
         // 3. Delete
         $deleteResponse = $this->actingAs($this->admin)->delete(route('admin.portofolio.destroy', $portofolio->id));
